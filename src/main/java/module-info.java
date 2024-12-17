@@ -6,6 +6,6 @@ module org.example.kompletteringsuppgiftajp {
 
     opens org.example.kompletteringsuppgiftajp to javafx.fxml;
     exports org.example.kompletteringsuppgiftajp;
-    exports org.example.kompletteringsuppgiftajp.entity;
-    opens org.example.kompletteringsuppgiftajp.entity to javafx.fxml;
+    exports org.example.kompletteringsuppgiftajp.Entities;
+    opens org.example.kompletteringsuppgiftajp.Entities to javafx.fxml;
 }

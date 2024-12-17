@@ -4,13 +4,13 @@
              xsi:schemaLocation="https://jakarta.ee/xml/ns/persistence https://jakarta.ee/xml/ns/persistence/persistence_3_0.xsd"
              version="3.0">
     <persistence-unit name="komplettering-unit" transaction-type="RESOURCE_LOCAL">
-        <class>org.example.kompletteringsuppgiftajp.entity.Notes</class>
-        <class>org.example.kompletteringsuppgiftajp.entity.Tags</class>
+        <class>org.example.kompletteringsuppgiftajp.Entities.Notes</class>
+        <class>org.example.kompletteringsuppgiftajp.Entities.Tags</class>
         <properties>
             <property name="jakarta.persistence.jdbc.driver" value="com.mysql.cj.jdbc.Driver"/>
             <property name="jakarta.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/Notepad"/>
             <property name="jakarta.persistence.jdbc.user" value="root"/>
-            <property name="jakarta.persistence.jdbc.password" value="EPasswordhere"/>
+            <property name="jakarta.persistence.jdbc.password" value="PASSSSSSSWORDDDDD"/>
             <property name="jakarta.persistence.schema-generation.database.action" value="create"/>
         </properties>
     </persistence-unit>

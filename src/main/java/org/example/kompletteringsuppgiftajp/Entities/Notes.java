@@ -1,4 +1,4 @@
-package org.example.kompletteringsuppgiftajp.entity;
+package org.example.kompletteringsuppgiftajp.Entities;
 
 import jakarta.persistence.*;
 
