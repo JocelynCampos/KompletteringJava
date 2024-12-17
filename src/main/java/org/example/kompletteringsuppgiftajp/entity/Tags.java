@@ -2,16 +2,22 @@ package org.example.kompletteringsuppgiftajp.entity;
 
 import jakarta.persistence.*;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Entity
 @Table (name = "Tags")
 
 public class Tags {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     @Column(name = "tag_content")
     private String tagContent;
+
+    @ManyToMany(mappedBy = "tags")
+    private Set<Notes> notes = new HashSet<>();
 
     public Tags () {
     }
@@ -34,5 +40,13 @@ public class Tags {
 
     public void setTagContent(String tagContent) {
         this.tagContent = tagContent;
+    }
+
+    public Set<Notes> getNotes() {
+        return notes;
+    }
+
+    public void setNotes(Set<Notes> notes) {
+        this.notes = notes;
     }
 }

@@ -2,6 +2,9 @@ package org.example.kompletteringsuppgiftajp.entity;
 
 import jakarta.persistence.*;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Entity
 @Table(name = "Notes")
 public class Notes {
@@ -16,8 +19,14 @@ public class Notes {
     @Column(name = "note_content")
     private String noteContent;
 
-    //@ManyToMany
-    //@JoinTable(name = "Notes_Tags")
+    @ManyToMany
+    @JoinTable(
+            name = "Notes_Tags",
+            joinColumns = @JoinColumn(name = "note_id"), //Referens till Notes table
+            inverseJoinColumns = @JoinColumn(name = "tag_id") //Referens till Tag table
+    )
+
+    private Set<Tags> tags = new HashSet<>();
 
     public Notes() {
     //Den tomma konstruktorn
@@ -53,5 +62,13 @@ public class Notes {
 
     public void setNoteContent(String noteContent) {
         this.noteContent = noteContent;
+    }
+
+    public Set<Tags> getTags() {
+        return tags;
+    }
+
+    public void setTags(Set<Tags> tags) {
+        this.tags = tags;
     }
 }
