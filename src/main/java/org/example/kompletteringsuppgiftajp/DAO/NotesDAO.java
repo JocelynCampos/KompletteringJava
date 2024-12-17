@@ -118,7 +118,4 @@ public class NotesDAO {
         }
         return false;
     }
-
-
-
 }
