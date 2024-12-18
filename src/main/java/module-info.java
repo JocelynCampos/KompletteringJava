@@ -2,6 +2,7 @@ module org.example.kompletteringsuppgiftajp {
     requires javafx.controls;
     requires javafx.fxml;
     requires jakarta.persistence;
+    requires org.hibernate.orm.core;
 
 
     opens org.example.kompletteringsuppgiftajp to javafx.fxml;
