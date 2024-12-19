@@ -11,7 +11,7 @@ import java.util.List;
 public class NotesDAO {
     //CRUD operationer
 
-    private static final EntityManagerFactory ENTITY_MANAGER_FACTORY = Persistence.createEntityManagerFactory("komplettering.unit");
+    private static final EntityManagerFactory ENTITY_MANAGER_FACTORY = Persistence.createEntityManagerFactory("komplettering-unit");
 
     //Create
     public void saveNotes(Notes notes){
