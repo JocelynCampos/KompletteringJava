@@ -18,10 +18,25 @@ public class NotesView {
 
     private final NotesDAO notesDAO = new NotesDAO();
     private final TagsDAO tagsDAO = new TagsDAO();
+    private final Stage stage;
+
+    public NotesView(Stage stage) {
+        this.stage = stage;
+    }
 
 
     public void ShowStage(Stage stage) {
         BorderPane root = new BorderPane();
+
+        //Test
+        ListView<String> notesLst = new ListView<>();
+        root.setCenter(notesLst);
+        loadNotes(notesLst);
+        stage.setScene(new Scene(root,800,600));
+        stage.setTitle("Notes app");
+        stage.show();
+        //Test
+
         root.setPadding(new Insets(10));
 
         //TOP Sökfält
