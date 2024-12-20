@@ -47,7 +47,7 @@ public class NotesView {
         titleField.setPromptText("Title");
         TextArea contentField = new TextArea();
         contentField.setPromptText("Content:");
-        VBox centerPanel = new VBox(10, new Label("Title"), titleField, new Label("Content", contentField));
+        VBox centerPanel = new VBox(10, new Label("Title"), titleField, new Label("Content"), contentField);
         centerPanel.setPadding(new Insets(10));
         root.setCenter(centerPanel);
 
@@ -91,7 +91,7 @@ public class NotesView {
                 if (noteToUpdate != null) {
                     String newTitle = titleField.getText();
                     String newContent = contentField.getText();
-                    if (newTitle.isEmpty() && newContent.isEmpty()) {
+                    if (!newTitle.isEmpty() && !newContent.isEmpty()) {
                         noteToUpdate.setNoteTitle(newTitle);
                         noteToUpdate.setNoteContent(newContent);
                         notesDAO.updateNotes(noteToUpdate);
