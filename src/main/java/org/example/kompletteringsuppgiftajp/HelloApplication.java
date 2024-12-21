@@ -9,9 +9,9 @@ import java.io.IOException;
 public class HelloApplication extends Application {
 
     @Override
-    public void start(Stage stage) throws IOException {
-    NotesView notesView = new NotesView(stage);
-    notesView.ShowStage(stage);
+    public void start(Stage primaryStage) throws IOException {
+    NotesView notesView = new NotesView(primaryStage);
+    notesView.ShowStage();
     }
 
     public static void main(String[] args) {
