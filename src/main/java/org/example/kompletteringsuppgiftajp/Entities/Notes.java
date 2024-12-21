@@ -11,7 +11,8 @@ public class Notes {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    @Column(name = "note_id")
+    private Integer id;
 
     @Column(name = "note_title", nullable = false)
     private String noteTitle;
@@ -21,7 +22,7 @@ public class Notes {
 
     @ManyToMany
     @JoinTable(
-            name = "Notes_Tags",
+            name = "Notes_tags",
             joinColumns = @JoinColumn(name = "note_id"), //Referens till Notes table
             inverseJoinColumns = @JoinColumn(name = "tag_id") //Referens till Tag table
     )

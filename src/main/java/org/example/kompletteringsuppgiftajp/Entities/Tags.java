@@ -11,7 +11,8 @@ import java.util.Set;
 public class Tags {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    @Column(name = "tag_id")
+    private Integer id;
 
     @Column(name = "tag_content")
     private String tagContent;
