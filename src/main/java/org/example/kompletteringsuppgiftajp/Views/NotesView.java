@@ -10,6 +10,7 @@ import javafx.stage.Stage;
 import org.example.kompletteringsuppgiftajp.DAO.NotesDAO;
 import org.example.kompletteringsuppgiftajp.DAO.TagsDAO;
 import org.example.kompletteringsuppgiftajp.Entities.Notes;
+import org.example.kompletteringsuppgiftajp.Entities.Tags;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -42,7 +43,7 @@ public class NotesView {
         root.setLeft(leftPanel);
 
         //Bottom, knappar till anteckningar
-        Button newNoteButton = new Button("New note");
+        Button newNoteButton = new Button("Save note");
         Button updateNoteButton = new Button("Update notes");
         Button removeNoteButton = new Button("Remove note");
         HBox buttonPanel = new HBox(10, newNoteButton, updateNoteButton, removeNoteButton);
@@ -135,9 +136,11 @@ public class NotesView {
 
         //AddTag knapp
         addTagButton.setOnAction(actionEvent -> {
-            String newTag = addTagField.getText();
-            if (!newTag.isEmpty()) {
-                tagsList.getItems().add(newTag);
+            String newTagContent = addTagField.getText();
+            if (!newTagContent.isEmpty()) {
+                Tags newTag = new Tags(newTagContent);
+                tagsDAO.saveTags(newTag);
+                tagsList.getItems().add(newTagContent);
                 addTagField.clear();
             } else {
                 alertUser(Alert.AlertType.WARNING, "Empty", "Enter a tag before adding");
@@ -148,9 +151,18 @@ public class NotesView {
         removeTagButton.setOnAction(actionEvent -> {
             String selectedTag = tagsList.getSelectionModel().getSelectedItem();
             if (selectedTag != null) {
-                tagsList.getItems().remove(selectedTag);
-                alertUser(Alert.AlertType.WARNING, "Tag: ","was successfully removed");
-            } else {
+                List<Tags> tagsListDB = tagsDAO.getAllTags();
+                Tags deleteTag = tagsListDB.stream()
+                        .filter(tags -> tags.getTagContent().equals(selectedTag))
+                        .findFirst()
+                        .orElse(null);
+                if (deleteTag != null) {
+                    boolean isDeleted = tagsDAO.deleteTags(deleteTag.getId());
+                    if (isDeleted) {
+                        tagsList.getItems().remove(selectedTag);
+                    }
+                }
+            } else  {
                 alertUser(Alert.AlertType.WARNING, "No selection","Select a tag to remove.");
             }
         });
@@ -164,6 +176,22 @@ public class NotesView {
             notesList.getItems().clear();
             filterNotes.forEach(notes -> notesList.getItems().add(notes.getNoteTitle()));
 
+        });
+
+        //Lyssnare för att visa anteckningar
+        notesList.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue ) -> {
+            if (newValue != null){
+                Notes selectedNote = notesDAO.getAllNotes()
+                        .stream()
+                        .filter(notes -> notes.getNoteTitle().equals(newValue))
+                        .findFirst()
+                        .orElse(null);
+                if (selectedNote != null) {
+                    titleField.setText(selectedNote.getNoteTitle());
+                    contentField.setText(selectedNote.getNoteContent());
+
+                }
+            }
         });
 
         loadNotes(notesList);
