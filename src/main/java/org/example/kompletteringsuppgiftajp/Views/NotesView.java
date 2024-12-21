@@ -25,17 +25,8 @@ public class NotesView {
     }
 
 
-    public void ShowStage(Stage stage) {
+    public void ShowStage() {
         BorderPane root = new BorderPane();
-
-        //Test
-        ListView<String> notesLst = new ListView<>();
-        root.setCenter(notesLst);
-        loadNotes(notesLst);
-        stage.setScene(new Scene(root,800,600));
-        stage.setTitle("Notes app");
-        stage.show();
-        //Test
 
         root.setPadding(new Insets(10));
 
@@ -178,9 +169,9 @@ public class NotesView {
         loadNotes(notesList);
 
         //Visa scenen
-        stage.setScene(new Scene(root, 800, 600));
-        stage.setTitle("Notes app");
-        stage.show();
+        this.stage.setScene(new Scene(root, 800, 600));
+        this.stage.setTitle("Notes app");
+        this.stage.show();
 
     }
 
