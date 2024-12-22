@@ -136,12 +136,29 @@ public class NotesView {
 
         //AddTag knapp
         addTagButton.setOnAction(actionEvent -> {
+            String selectedNoteTitle = notesList.getSelectionModel().getSelectedItem();
             String newTagContent = addTagField.getText();
-            if (!newTagContent.isEmpty()) {
-                Tags newTag = new Tags(newTagContent);
-                tagsDAO.saveTags(newTag);
-                tagsList.getItems().add(newTagContent);
-                addTagField.clear();
+            if (selectedNoteTitle != null && !newTagContent.isEmpty()) {
+                Notes selectedNote = notesDAO.getAllNotes()
+                        .stream()
+                        .filter(notes -> notes.getNoteTitle().equals(selectedNoteTitle))
+                        .findFirst()
+                        .orElse(null);
+                if (selectedNote != null) {
+                    Tags existingTag = tagsDAO.getAllTags()
+                            .stream()
+                            .filter(tags -> tags.getTagContent().equals(newTagContent))
+                            .findFirst()
+                            .orElse(null);
+                    if (existingTag == null) {
+                        Tags createNewTag = new Tags(newTagContent);
+                        tagsDAO.saveTags(createNewTag);
+                        existingTag = createNewTag;
+                    }
+                    notesDAO.connectTagsToNotes(selectedNote.getId(), existingTag.getId());
+                    tagsList.getItems().add(existingTag.getTagContent());
+                    addTagField.clear();
+                }
             } else {
                 alertUser(Alert.AlertType.WARNING, "Empty", "Enter a tag before adding");
             }
@@ -224,4 +241,5 @@ public class NotesView {
         alert.showAndWait();
 
     }
+
 }

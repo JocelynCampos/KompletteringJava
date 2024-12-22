@@ -5,6 +5,7 @@ import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.Persistence;
 import org.example.kompletteringsuppgiftajp.Entities.Notes;
+import org.example.kompletteringsuppgiftajp.Entities.Tags;
 
 import java.util.List;
 
@@ -117,5 +118,33 @@ public class NotesDAO {
             em.close();
         }
         return false;
+    }
+
+    public void connectTagsToNotes(int noteId, int tagId) {
+        EntityManager em = ENTITY_MANAGER_FACTORY.createEntityManager();
+        EntityTransaction transaction = null;
+
+        try {
+            transaction = em.getTransaction();
+            transaction.begin();
+
+            Notes notes = em.find(Notes.class, noteId);
+            Tags tags = em.find(Tags.class, tagId);
+
+            if (notes != null && tags != null) {
+                notes.getTags().add(tags);
+                tags.getNotes().add(notes);
+
+                em.merge(notes);
+            }
+            transaction.commit();
+        } catch (Exception e) {
+            if (transaction != null && transaction.isActive()) {
+                transaction.rollback();
+            }
+            e.printStackTrace();
+        } finally {
+            em.close();
+        }
     }
 }
