@@ -191,6 +191,9 @@ public class NotesView {
                     contentField.setText(selectedNote.getNoteContent());
 
                 }
+            } else {
+                titleField.clear();
+                contentField.clear();
             }
         });
 
