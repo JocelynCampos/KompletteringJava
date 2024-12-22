@@ -20,7 +20,7 @@ public class Notes {
     @Column(name = "note_content")
     private String noteContent;
 
-    @ManyToMany
+    @ManyToMany (fetch = FetchType.EAGER)
     @JoinTable(
             name = "Notes_tags",
             joinColumns = @JoinColumn(name = "note_id"), //Referens till Notes table

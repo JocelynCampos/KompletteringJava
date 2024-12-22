@@ -112,4 +112,23 @@ public class TagsDAO {
         }
         return false;
     }
+
+    public List<Tags> getTagsForNoteID(int noteID) {
+        EntityManager em = ENTITY_MANAGER_FACTORY.createEntityManager();
+        List<Tags> tagsList = null;
+
+        try {
+            tagsList = em.createQuery(
+                    "SELECT t FROM Tags t JOIN t.notes n WHERE n.id = :noteId", Tags.class)
+                    .setParameter("noteId", noteID)
+                    .getResultList();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            em.close();
+        }
+        return tagsList;
+
+
+    }
 }

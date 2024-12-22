@@ -1,5 +1,6 @@
 package org.example.kompletteringsuppgiftajp.Views;
 
+import jakarta.persistence.EntityManager;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -20,6 +21,10 @@ public class NotesView {
     private final NotesDAO notesDAO = new NotesDAO();
     private final TagsDAO tagsDAO = new TagsDAO();
     private final Stage stage;
+    private ListView<String> notesList;
+    private ListView<String> tagsList;
+    private TextField titleField;
+    private TextArea contentField;
 
     public NotesView(Stage stage) {
         this.stage = stage;
@@ -37,7 +42,7 @@ public class NotesView {
         root.setTop(searchField);
 
         //VÄNSTER sida Anteckningarna
-        ListView<String> notesList = new ListView<>();
+        notesList = new ListView<>();
         VBox leftPanel = new VBox(10, new Label("Notes"), notesList);
         leftPanel.setPadding(new Insets(10));
         root.setLeft(leftPanel);
@@ -46,20 +51,22 @@ public class NotesView {
         Button newNoteButton = new Button("Save note");
         Button updateNoteButton = new Button("Update notes");
         Button removeNoteButton = new Button("Remove note");
-        HBox buttonPanel = new HBox(10, newNoteButton, updateNoteButton, removeNoteButton);
+        Button clearAllFieldsButton = new Button("Clear Fields");
+
+        HBox buttonPanel = new HBox(10, newNoteButton, updateNoteButton, removeNoteButton, clearAllFieldsButton);
         root.setBottom(buttonPanel);
 
         //Center Innehåll
-        TextField titleField = new TextField();
+        titleField = new TextField();
         titleField.setPromptText("Title");
-        TextArea contentField = new TextArea();
+        contentField = new TextArea();
         contentField.setPromptText("Content:");
         VBox centerPanel = new VBox(10, new Label("Title"), titleField, new Label("Content"), contentField);
         centerPanel.setPadding(new Insets(10));
         root.setCenter(centerPanel);
 
         //Höger Taggar
-        ListView<String> tagsList = new ListView<>();
+        tagsList = new ListView<>();
         TextField addTagField = new TextField();
         addTagField.setPromptText("Add new tag");
         Button addTagButton = new Button("Add tag");
@@ -89,15 +96,18 @@ public class NotesView {
         //Updatera anteckning
         updateNoteButton.setOnAction(actionEvent -> {
             String selectedNote = notesList.getSelectionModel().getSelectedItem();
+
             if (selectedNote != null) {
                 Notes noteToUpdate = notesDAO.getAllNotes()
                         .stream()
                         .filter(notes -> notes.getNoteTitle().equals(selectedNote))
                         .findFirst()
                         .orElse(null);
+
                 if (noteToUpdate != null) {
-                    String newTitle = titleField.getText();
-                    String newContent = contentField.getText();
+                    String newTitle = titleField.getText().trim();
+                    String newContent = contentField.getText().trim();
+
                     if (!newTitle.isEmpty() && !newContent.isEmpty()) {
                         noteToUpdate.setNoteTitle(newTitle);
                         noteToUpdate.setNoteContent(newContent);
@@ -134,6 +144,10 @@ public class NotesView {
             }
         });
 
+        //Rensa allt knapp
+        clearAllFieldsButton.setOnAction(actionEvent -> clearAllFields());
+
+
         //AddTag knapp
         addTagButton.setOnAction(actionEvent -> {
             String selectedNoteTitle = notesList.getSelectionModel().getSelectedItem();
@@ -156,7 +170,7 @@ public class NotesView {
                         existingTag = createNewTag;
                     }
                     notesDAO.connectTagsToNotes(selectedNote.getId(), existingTag.getId());
-                    tagsList.getItems().add(existingTag.getTagContent());
+                    showTagsForEachNote(selectedNote);
                     addTagField.clear();
                 }
             } else {
@@ -186,13 +200,26 @@ public class NotesView {
 
         //Listener för sökning i notes
         searchField.textProperty().addListener((observable, oldValue, newValue) -> {
+            notesList.getItems().clear();
+            tagsList.getItems().clear();
+
+            if (newValue == null || newValue.trim().isEmpty()) {
+                loadNotes(notesList);
+                return;
+            }
+
             List<Notes> filterNotes = notesDAO.getAllNotes()
                     .stream()
-                    .filter(notes -> notes.getNoteTitle().toLowerCase().contains(newValue.toLowerCase()))
+                    .filter(notes -> notes.getNoteTitle().toLowerCase().contains(newValue.toLowerCase()) ||
+                            notes.getTags().stream()
+                                    .anyMatch(tags -> tags.getTagContent().toLowerCase().contains(newValue.toLowerCase())))
                     .collect(Collectors.toList());
-            notesList.getItems().clear();
-            filterNotes.forEach(notes -> notesList.getItems().add(notes.getNoteTitle()));
 
+            filterNotes.forEach(notes -> {
+                notesList.getItems().add(notes.getNoteTitle());
+
+                notes.getTags().forEach(tags -> tagsList.getItems().add(tags.getTagContent()));
+            });
         });
 
         //Lyssnare för att visa anteckningar
@@ -203,14 +230,16 @@ public class NotesView {
                         .filter(notes -> notes.getNoteTitle().equals(newValue))
                         .findFirst()
                         .orElse(null);
+
                 if (selectedNote != null) {
                     titleField.setText(selectedNote.getNoteTitle());
                     contentField.setText(selectedNote.getNoteContent());
-
+                    showTagsForEachNote(selectedNote);
                 }
             } else {
                 titleField.clear();
                 contentField.clear();
+                tagsList.getItems().clear();
             }
         });
 
@@ -230,8 +259,26 @@ public class NotesView {
             for (Notes note : allNotes)
                 notesList.getItems().add(note.getNoteTitle());
         }
+    }
 
+    private void showTagsForEachNote(Notes selectedNote) {
+        tagsList.getItems().clear();
 
+        if (selectedNote != null && selectedNote.getTags() != null) {
+            selectedNote.getTags().forEach(tags -> {
+                tagsList.getItems().add(tags.getTagContent());
+                System.out.println(tags.getTagContent());
+            });
+        } else {
+            System.out.println("No tags here buddy! :) ");
+        }
+    }
+
+    private void clearAllFields() {
+        titleField.clear();
+        contentField.clear();
+        tagsList.getItems().clear();
+        notesList.getSelectionModel().clearSelection();
     }
 
     private void alertUser(Alert.AlertType alertType, String title, String message) {

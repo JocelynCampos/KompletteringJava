@@ -136,6 +136,7 @@ public class NotesDAO {
                 tags.getNotes().add(notes);
 
                 em.merge(notes);
+                em.merge(tags);
             }
             transaction.commit();
         } catch (Exception e) {
