@@ -170,7 +170,8 @@ public class NotesView {
                         existingTag = createNewTag;
                     }
                     notesDAO.connectTagsToNotes(selectedNote.getId(), existingTag.getId());
-                    showTagsForEachNote(selectedNote);
+                    Notes refreshedNote = notesDAO.getNotesID(selectedNote.getId());
+                    showTagsForEachNote(refreshedNote);
                     addTagField.clear();
                 }
             } else {
