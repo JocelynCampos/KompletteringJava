@@ -10,7 +10,7 @@
             <property name="jakarta.persistence.jdbc.driver" value="com.mysql.cj.jdbc.Driver"/>
             <property name="jakarta.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/Notepad"/>
             <property name="jakarta.persistence.jdbc.user" value="root"/>
-            <property name="jakarta.persistence.jdbc.password" value="PASSWORD"/>
+            <property name="jakarta.persistence.jdbc.password" value="Edugrade2024"/>
             <property name="jakarta.persistence.schema-generation.database.action" value="update"/>
         </properties>
     </persistence-unit>

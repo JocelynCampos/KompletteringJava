@@ -25,6 +25,7 @@ public class NotesView {
     private ListView<String> tagsList;
     private TextField titleField;
     private TextArea contentField;
+    //private TagField tagField;
 
     public NotesView(Stage stage) {
         this.stage = stage;
@@ -61,6 +62,7 @@ public class NotesView {
         titleField.setPromptText("Title");
         contentField = new TextArea();
         contentField.setPromptText("Content:");
+
         VBox centerPanel = new VBox(10, new Label("Title"), titleField, new Label("Content"), contentField);
         centerPanel.setPadding(new Insets(10));
         root.setCenter(centerPanel);
@@ -79,15 +81,32 @@ public class NotesView {
         newNoteButton.setOnAction(actionEvent -> {
             String title = titleField.getText();
             String content = contentField.getText();
+            String tag = addTagField.getText();
 
             if (!title.isEmpty() && !content.isEmpty()) {
                 Notes newNote = new Notes();
                 newNote.setNoteTitle(title);
                 newNote.setNoteContent(content);
+
+                if (tag !=null && !tag.trim().isEmpty()) {
+                    Tags existingTag = tagsDAO.getAllTags()
+                            .stream()
+                            .filter(tags -> tags.getTagContent().equalsIgnoreCase(tag))
+                            .findFirst()
+                            .orElse(null);
+
+                    if (existingTag == null) {
+                        existingTag = new Tags(tag);
+                        tagsDAO.saveTags(existingTag);
+                    }
+                    newNote.getTags().add(existingTag);
+                }
+
                 notesDAO.saveNotes(newNote);//Save in database
                 loadNotes(notesList); //Updatera listan
                 titleField.clear();
                 contentField.clear();
+                addTagField.clear();
             } else {
                 System.out.println("Empty in here. Waiting for content :) ");
             }
